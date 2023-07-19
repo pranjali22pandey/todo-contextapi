@@ -14,6 +14,8 @@ const App = () => {
     toggleEditing,
     updateTodo,
   } = useTodo();
+  
+  const [editedTodo, setEditedTodo] = React.useState("");
 
   const handleAddTodo = () => {
     if (!todo || todo.length < 4) {
@@ -38,6 +40,28 @@ const App = () => {
     if (event.key === "Enter") {
       handleAddTodo();
     }
+  };
+
+  const handleEditInputChange = (event) => {
+    setEditedTodo(event.target.value);
+  };
+
+  const handleUpdateTodo = (itemId) => {
+    if (!editedTodo || editedTodo.length < 4) {
+      toast.warning("Todo cannot be empty or less than 3 characters", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
+    updateTodo(itemId, editedTodo);
+    setEditedTodo("");
   };
 
   return (
@@ -66,14 +90,14 @@ const App = () => {
                     <input
                       className="form-control"
                       type="text"
-                      value={item.todo}
-                      onChange={(e) => updateTodo(item.id, e.target.value)}
+                      value={editedTodo}
+                      onChange={handleEditInputChange}
                     />
                     <div>
                       <button className="btn btn-danger btn-sm mx-1" onClick={() => toggleEditing(item.id)}>
                         Cancel
                       </button>
-                      <button className="btn btn-success btn-sm" onClick={() => updateTodo(item.id, item.todo)}>
+                      <button className="btn btn-success btn-sm" onClick={() => handleUpdateTodo(item.id)}>
                         Update
                       </button>
                     </div>
